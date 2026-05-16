@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FIRST Robotics News</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-first">FIRST</span>
+        <span class="logo-news">Robotics News</span>
+      </div>
+      <div class="header-meta">
+        {% if last_updated %}
+          <span class="last-updated">Last updated: {{ last_updated }}</span>
+        {% endif %}
+        <a href="/refresh" class="refresh-btn">&#8635; Refresh</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    {% if error %}
+      <div class="error-banner">
+        <strong>Error fetching news:</strong> {{ error }}
+      </div>
+    {% endif %}
+
+    {% if articles %}
+      <div class="feed">
+        {% for article in articles %}
+          <article class="card">
+            {% if article.thumbnail %}
+              <a href="{{ article.link }}" target="_blank" rel="noopener noreferrer" class="card-thumb-link">
+                <img class="card-thumb" src="{{ article.thumbnail }}" alt="{{ article.title }}" loading="lazy" />
+              </a>
+            {% else %}
+              <div class="card-thumb-placeholder">
+                <span>FIRST</span>
+              </div>
+            {% endif %}
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="card-source">{{ article.source }}</span>
+                {% if article.date %}
+                  <span class="card-date">{{ article.date }}</span>
+                {% endif %}
+              </div>
+              <h2 class="card-title">
+                <a href="{{ article.link }}" target="_blank" rel="noopener noreferrer">{{ article.title }}</a>
+              </h2>
+              {% if article.snippet %}
+                <p class="card-snippet">{{ article.snippet }}</p>
+              {% endif %}
+              <a class="card-readmore" href="{{ article.link }}" target="_blank" rel="noopener noreferrer">Read more &rarr;</a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>No articles found. Try <a href="/refresh">refreshing</a>.</p>
+      </div>
+    {% endif %}
+  </main>
+
+  <footer>
+    <p>Powered by <a href="https://serpapi.com" target="_blank" rel="noopener noreferrer">SerpAPI</a> &middot; Covers FRC, FLL, FTC &amp; all FIRST programs</p>
+  </footer>
+</body>
+</html>
